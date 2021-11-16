@@ -1,4 +1,5 @@
-export { default as ProductModel } from "./product.model";
-export { default as ServiceModel } from "./service.model";
-export { default as ClientModel } from "./client.model";
-export { default as BusinessModel } from "./business.model";
+export { Product } from "./Product.model";
+export { Service } from "./Service.model";
+export { Client } from "./Client.model";
+export { People } from "./People.model";
+export { default as BusinessModel } from "./Business.model";

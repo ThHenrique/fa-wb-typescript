@@ -1,27 +1,27 @@
-import Entrada from "../services/number-text.input";
+import Input from "../services/Number-text.input";
 
-import { ClientModel } from "../models";
-import { CpfModel } from "../shared/models";
+import { BusinessModel, Client as ClientModel } from "../models";
+import { Phone } from "../shared/models";
 
 export default class ClientController {
-  private clients: Array<ClientModel>;
-  private input: Entrada;
+  private input: Input;
+  private clientList: Array<ClientModel>;
+  private business: BusinessModel;
 
-  constructor(clients: Array<ClientModel>) {
-    this.clients = clients;
-    this.input = new Entrada();
+  constructor(business: BusinessModel) {
+    this.input = new Input();
+    this.clientList = business.clients;
+    this.business = business;
   }
 
   findClient(cpfNumber: string) {
-    const clientFiltered = this.clients.filter(
-      (client) => client.getCpf.getValor === cpfNumber
+    const clientFiltered = this.clientList.filter(
+      (client) => client.getCpf() === cpfNumber
     );
 
     if (clientFiltered.length == 0) {
       console.log("Cliente não encontrado, tente novamente!");
-      cpfNumber = this.input.receberTexto(
-        `Por favor informe o número do cpf: `
-      );
+      cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
       return this.findClient(cpfNumber);
     }
     return clientFiltered[0];
@@ -29,75 +29,78 @@ export default class ClientController {
 
   public create(): void {
     console.log("\nInício do cadastro do cliente");
-    let name = this.input.receberTexto(`Por favor informe o nome do cliente: `);
-    let email = this.input.receberTexto(
-      "Por favor informe o email do cliente: "
+
+    const name = this.input.text(`Nome completo: `);
+    const email = this.input.text("Email: ");
+    const cpfNumber = this.input.text("CPF: ");
+    const gender = this.input.text("Sexo (Masculino - Feminino - Outro): ");
+    const birthDate = this.input.text("Data de nascimento (Mês/Dia/Ano): ");
+
+    const ddd = this.input.number("Número (DDD): ");
+    const number = this.input.number("Número: ");
+    const phoneList: Phone[] = [];
+
+    phoneList.push(new Phone(ddd, number));
+    const birthDateAux = new Date(birthDate);
+
+    const client = new ClientModel(
+      email,
+      name,
+      cpfNumber,
+      birthDateAux,
+      gender,
+      phoneList
     );
-    let nomeSocial = this.input.receberTexto(
-      "Por favor informe o nome social do cliente: "
-    );
-    let cpfNumber = this.input.receberTexto(
-      "Por favor informe o número do cpf: "
-    );
-    let data = this.input.receberTexto(
-      "Por favor informe a data de emissão do cpf, no padrão dd/mm/yyyy: "
-    );
-    let partesData = data.split("/");
-    let ano = new Number(partesData[2].valueOf()).valueOf();
-    let mes = new Number(partesData[1].valueOf()).valueOf();
-    let dia = new Number(partesData[0].valueOf()).valueOf();
-    let dataEmissao = new Date(ano, mes, dia);
-    let cpf = new CpfModel(cpfNumber, dataEmissao);
-    let client = new ClientModel(name, nomeSocial, email, cpf);
-    this.clients.push(client);
+
+    this.clientList.push(client);
     console.log("\nCadastro concluído :)\n");
   }
 
   public index(): void {
     console.log(`\nLista de todos os clientes:`);
-    this.clients.forEach((client) => {
-      console.log(`Nome: ${client.name}`);
-      console.log(`Nome social: ${client.nomeSocial}`);
-      console.log(`CPF: ${client.getCpf.getValor}`);
-      console.log(`--------------------------------------`);
+    this.clientList.forEach((client) => {
+      console.log(`
+      Nome: ${client.name}
+      CPF: ${client.getCpf()}
+      --------------------------------------`);
     });
     console.log(`\n`);
   }
 
   public show(): void {
-    let cpfNumber = this.input.receberTexto(
-      `Por favor informe o número do cpf: `
-    );
+    let cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
 
     const client: ClientModel = this.findClient(cpfNumber);
-    console.log(`Nome: ${client.name}`);
-    console.log(`Nome social: ${client.nomeSocial}`);
-    console.log(`CPF: ${client.getCpf.getValor}`);
-    console.log(`--------------------------------------`);
+    console.log(`
+    Nome: ${client.name}
+    CPF: ${client.getCpf()}
+    --------------------------------------`);
     console.log(`\n`);
   }
 
   public put(): void {
-    let cpfNumber = this.input.receberTexto(
-      `Por favor informe o número do cpf: `
-    );
+    let cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
 
     const client: ClientModel = this.findClient(cpfNumber);
-    let name = this.input.receberTexto(`Atualizar nome do cliente: `);
-    let email = this.input.receberTexto(`Atualizar email do cliente: `);
+    let name = this.input.text(`Atualizar nome do cliente: `);
+    let email = this.input.text(`Atualizar email do cliente: `);
     const payload = { email, name };
     client.updateInfo = payload;
     console.log(`\n`);
   }
 
   public delete(): void {
-    let cpfNumber = this.input.receberTexto(
-      `Por favor informe o número do cpf: `
-    );
+    let cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
 
     const client: ClientModel = this.findClient(cpfNumber);
 
-    console.log(client);
+    const clientListUpdated = this.clientList.filter(
+      (clientRemoved: ClientModel) => {
+        return clientRemoved.getCpf() !== client.getCpf();
+      }
+    );
+
+    this.business.setListClient(clientListUpdated);
     console.log(`\n`);
   }
 }
