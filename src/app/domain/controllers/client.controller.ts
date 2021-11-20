@@ -3,7 +3,7 @@ import Input from "../services/Number-text.input";
 import { BusinessModel, Client as ClientModel } from "../models";
 import { Phone } from "../shared/models";
 
-export default class ClientController {
+export class ClientController {
   private input: Input;
   private clientList: Array<ClientModel>;
   private business: BusinessModel;
@@ -12,6 +12,46 @@ export default class ClientController {
     this.input = new Input();
     this.clientList = business.clients;
     this.business = business;
+  }
+
+  actionsClient() {
+    console.log(
+      `\n
+      Opções de Cliente: 
+      1 - Cadastrar cliente
+      2 - Listar todos os clientes
+      3 - Atualizar cadastro do cliente
+      4 - Mostrar informação de um cliente
+      5 - Remover cliente 
+      0 - Voltar ao menu principal \n
+      `
+    );
+
+    let clientOption = this.input.number(
+      `Por favor, escolha uma opção de cliente: `
+    );
+    switch (clientOption) {
+      case 0:
+        return;
+      // break;
+      case 1:
+        this.create();
+        break;
+      case 2:
+        this.index();
+        break;
+      case 3:
+        this.put();
+        break;
+      case 4:
+        this.show();
+        break;
+      case 5:
+        this.delete();
+        break;
+      default:
+        console.log(`Operação não entendida :(`);
+    }
   }
 
   findClient(cpfNumber: string) {
@@ -33,7 +73,10 @@ export default class ClientController {
     const name = this.input.text(`Nome completo: `);
     const email = this.input.text("Email: ");
     const cpfNumber = this.input.text("CPF: ");
-    const gender = this.input.text("Sexo (Masculino - Feminino - Outro): ");
+    let gender = this.input.text(
+      "Sexo (M - Masculino, F - Feminino, O - Outro): "
+    );
+    gender === "M" ? "Masculino" : gender === "F" ? "Feminino" : "Outros";
     const birthDate = this.input.text("Data de nascimento (Mês/Dia/Ano): ");
 
     const ddd = this.input.number("Número (DDD): ");

@@ -2,7 +2,7 @@ import Input from "../services/Number-text.input";
 
 import { BusinessModel, Service } from "../models";
 
-export default class ServiceController {
+export class ServiceController {
   private input: Input;
   private business: BusinessModel;
   private serviceList: Array<Service>;
@@ -11,6 +11,44 @@ export default class ServiceController {
     this.input = new Input();
     this.business = business;
     this.serviceList = business.services;
+  }
+
+  actionsService() {
+    console.log(
+      `\n
+      Opções de serviço:
+      1 - Cadastrar serviço
+      2 - Catálogo de serviço
+      3 - Buscar serviço
+      4 - Atualizar serviço
+      5 - Remover serviço 
+      0 - Voltar ao menu principal \n
+      `
+    );
+    let serviceOption = this.input.number(`Por favor, escolha uma opção: `);
+
+    switch (serviceOption) {
+      case 0:
+        return;
+      case 1:
+        this.create();
+        break;
+      case 2:
+        this.index();
+        break;
+      case 3:
+        this.show();
+        break;
+      case 4:
+        this.put();
+        break;
+      case 5:
+        this.delete();
+        break;
+
+      default:
+        console.log(`Operação não entendida :(`);
+    }
   }
 
   generatingServiceCode() {

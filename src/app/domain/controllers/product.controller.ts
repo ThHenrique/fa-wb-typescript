@@ -2,7 +2,7 @@ import Input from "../services/Number-text.input";
 
 import { BusinessModel, Product as ProductModel } from "../models";
 
-export default class ProductController {
+export class ProductController {
   private input: Input;
   private business: BusinessModel;
   private productList: Array<ProductModel>;
@@ -11,6 +11,44 @@ export default class ProductController {
     this.input = new Input();
     this.business = business;
     this.productList = business.products;
+  }
+
+  actionsProduct() {
+    console.log(
+      `\n
+      Opções de Produto:
+      1 - Cadastrar produto
+      2 - Catálogo de produto
+      3 - Buscar produto
+      4 - Atualizar produto
+      5 - Remover produto 
+      0 - Voltar ao menu principal \n
+    `
+    );
+
+    let productOption = this.input.number(`Por favor, escolha uma opção: `);
+
+    switch (productOption) {
+      case 0:
+        return;
+      case 1:
+        this.create();
+        break;
+      case 2:
+        this.index();
+        break;
+      case 3:
+        this.show();
+        break;
+      case 4:
+        this.put();
+        break;
+      case 5:
+        this.delete();
+        break;
+      default:
+        console.log(`Operação não entendida :(`);
+    }
   }
 
   generatingProductCode() {
