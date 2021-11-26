@@ -1,5 +1,5 @@
 import { BusinessModel, Client, Product, Service } from "../../models";
-import api from "../services/api";
+import { Phone } from "../models";
 
 export class ValuesDefault {
   private business: BusinessModel;
@@ -17,7 +17,7 @@ export class ValuesDefault {
   public create(): void {
     const servicesDefault = this.serviceDefault();
     const productsDefault = this.productsDefault();
-    // const clientsDefault = Promise.resolve(this.clientsDefault());
+    const clientsDefault = this.clientsDefault();
 
     servicesDefault.forEach((service) => {
       const newService = new Service(service.id, service.name, service.price);
@@ -34,17 +34,23 @@ export class ValuesDefault {
       this.productList.push(newProduct);
     });
 
-    // clientsDefault.forEach((client) => {
-    //   const newClient = new Client(
-    //     client.email,
-    //     client.name,
-    //     client.CPF,
-    //     client.birthDate,
-    //     client.gender,
-    //     client.phones
-    //   );
-    //   this.clientList.push(newClient);
-    // });
+    clientsDefault.forEach((client) => {
+      const phoneList: Phone[] = [];
+
+      client.phones.forEach(({ ddd, number }) => {
+        phoneList.push(new Phone(ddd, number));
+      });
+
+      const newClient = new Client(
+        client.email,
+        client.name,
+        client.CPF,
+        client.birthDate,
+        client.gender,
+        phoneList
+      );
+      this.clientList.push(newClient);
+    });
   }
 
   serviceDefault() {
@@ -79,12 +85,75 @@ export class ValuesDefault {
     return products;
   }
 
-  // async clientsDefault() {
-  //   try {
-  //     const { data } = await api.get("/users");
-  //     console.log(data);
-
-  //     return data;
-  //   } catch (error) {}
-  // }
+  clientsDefault() {
+    const clients = [
+      {
+        email: "thiago@email.com",
+        name: "Thiago Ferreira",
+        CPF: "123",
+        birthDate: new Date("08/24/2001"),
+        gender: "M",
+        phones: [
+          { ddd: 12, number: 931223211 },
+          { ddd: 12, number: 31213111 },
+        ],
+      },
+      {
+        email: "nelson@email.com",
+        name: "Nelson Ferreira",
+        CPF: "321",
+        birthDate: new Date("07/11/1999"),
+        gender: "M",
+        phones: [
+          { ddd: 12, number: 432567843 },
+          { ddd: 12, number: 78457332 },
+        ],
+      },
+      {
+        email: "henrique@email.com",
+        name: "Henrique Moura",
+        CPF: "111",
+        birthDate: new Date("01/01/2002"),
+        gender: "M",
+        phones: [
+          { ddd: 12, number: 649863412 },
+          { ddd: 12, number: 23568606 },
+        ],
+      },
+      {
+        email: "MariaElena@email.com",
+        name: "Maria Elena",
+        CPF: "1234",
+        birthDate: new Date("01/24/2001"),
+        gender: "F",
+        phones: [
+          { ddd: 12, number: 74889714 },
+          { ddd: 12, number: 98554100 },
+        ],
+      },
+      {
+        email: "LuizBrito@email.com",
+        name: "Luiza Brito",
+        CPF: "1112",
+        birthDate: new Date("07/11/1999"),
+        gender: "F",
+        phones: [
+          { ddd: 12, number: 74449668 },
+          { ddd: 12, number: 745522100 },
+        ],
+      },
+      {
+        email: "gatinhabonitinha@email.com",
+        name: "Ana Clara",
+        CPF: "11113",
+        birthDate: new Date("04/01/2002"),
+        gender: "F",
+        phones: [
+          { ddd: 12, number: 44599822 },
+          { ddd: 12, number: 99856641 },
+        ],
+      },
+    ];
+    return clients;
+  }
 }
