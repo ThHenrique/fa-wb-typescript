@@ -1,5 +1,6 @@
 import { BusinessModel, Client, Product, Service } from "../../models";
 import { Phone } from "../models";
+import Random from "./randomId";
 
 export class ValuesDefault {
   private business: BusinessModel;
@@ -40,8 +41,9 @@ export class ValuesDefault {
       client.phones.forEach(({ ddd, number }) => {
         phoneList.push(new Phone(ddd, number));
       });
-
+      const id = Random(Date.now());
       const newClient = new Client(
+        id,
         client.email,
         client.name,
         client.CPF,
