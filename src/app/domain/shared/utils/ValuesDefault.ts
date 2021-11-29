@@ -1,4 +1,4 @@
-import { BusinessModel, Client, Product, Service } from "../../models";
+import { BusinessModel, Client, Order, Product, Service } from "../../models";
 import { Phone } from "../models";
 import Random from "./randomId";
 
@@ -7,12 +7,14 @@ export class ValuesDefault {
   private serviceList: Array<Service>;
   private productList: Array<Product>;
   private clientList: Array<Client>;
+  private orderList: Array<Order>;
 
   constructor(business: BusinessModel) {
     this.business = business;
     this.serviceList = business.services;
     this.productList = business.products;
     this.clientList = business.clients;
+    this.orderList = business.orders;
   }
 
   public create(): void {
@@ -52,6 +54,36 @@ export class ValuesDefault {
         phoneList
       );
       this.clientList.push(newClient);
+    });
+
+    const ordersDefault = this.ordersDefault();
+    ordersDefault.forEach((order) => {
+      const productCartList: Array<{ product: Product; unit: number }> = [];
+      const serviceCartList: Array<{ service: Service; unit: number }> = [];
+      order.productCartList.forEach((product, index) => {
+        const productPivot = {
+          product: product,
+          unit: order.productUnit[index],
+        };
+        productCartList.push(productPivot);
+      });
+      order.serviceCartList.forEach((service, index) => {
+        const servicePivot = { service: service, unit: 1 };
+        serviceCartList.push(servicePivot);
+      });
+      const id = Random(Date.now());
+      const newOrder = new Order(
+        id,
+        order.clientId,
+        order.dateCreated,
+        order.statusPayment,
+        order.seller_id,
+        order.seller_commission,
+        productCartList,
+        serviceCartList
+      );
+
+      this.orderList.push(newOrder);
     });
   }
 
@@ -157,5 +189,113 @@ export class ValuesDefault {
       },
     ];
     return clients;
+  }
+
+  ordersDefault() {
+    const timestamp = new Date();
+    const orderList = [
+      {
+        clientId: 321,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 2,
+        seller_commission: 3,
+        productCartList: this.productList.slice(1, 3),
+        serviceCartList: this.serviceList.slice(1),
+        productUnit: [4, 5],
+      },
+      {
+        clientId: 111,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 1,
+        seller_commission: 3,
+        productCartList: this.productList.slice(5, 7),
+        serviceCartList: this.serviceList.slice(5),
+        productUnit: [4, 7],
+      },
+      {
+        clientId: 111,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 1,
+        seller_commission: 3,
+        productCartList: this.productList.slice(5, 7),
+        serviceCartList: this.serviceList.slice(5),
+        productUnit: [4, 7],
+      },
+      {
+        clientId: 111,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 1,
+        seller_commission: 3,
+        productCartList: this.productList.slice(1),
+        serviceCartList: this.serviceList.slice(1),
+        productUnit: [3],
+      },
+      {
+        clientId: 1234,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 3,
+        seller_commission: 3,
+        productCartList: this.productList.slice(1, 3),
+        serviceCartList: this.serviceList.slice(4),
+        productUnit: [3, 2],
+      },
+      {
+        clientId: 1112,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 3,
+        seller_commission: 3,
+        productCartList: this.productList.slice(7, 9),
+        serviceCartList: this.serviceList.slice(7),
+        productUnit: [4, 1],
+      },
+      {
+        clientId: 11113,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 2,
+        seller_commission: 3,
+        productCartList: this.productList.slice(6, 9),
+        serviceCartList: this.serviceList.slice(9),
+        productUnit: [1, 4, 1],
+      },
+      {
+        clientId: 1112,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 3,
+        seller_commission: 3,
+        productCartList: this.productList.slice(5, 9),
+        serviceCartList: this.serviceList.slice(4),
+        productUnit: [3, 2, 4, 1],
+      },
+      {
+        clientId: 1112,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 3,
+        seller_commission: 3,
+        productCartList: this.productList.slice(2, 7),
+        serviceCartList: this.serviceList.slice(1),
+        productUnit: [1, 1, 1, 1, 2, 1],
+      },
+      {
+        clientId: 1112,
+        dateCreated: timestamp,
+        statusPayment: "pending",
+        seller_id: 3,
+        seller_commission: 3,
+        productCartList: this.productList.slice(7, 9),
+        serviceCartList: this.serviceList.slice(5),
+        productUnit: [1, 1],
+      },
+    ];
+
+    return orderList;
   }
 }

@@ -45,4 +45,16 @@ const findService = (serviceList: Array<Service>) => {
   return serviceFiltered[0];
 };
 
-export { findClient, findProduct, findService };
+const findOrder = (orderList: Array<Order>) => {
+  let orderCode = input.number(`Código do PEDIDO: `);
+
+  const orderFiltered = orderList.filter((order) => order.id === orderCode);
+
+  if (orderFiltered.length == 0) {
+    console.log("Pedido não encontrado, tente novamente!");
+    return findOrder(orderList);
+  }
+  return orderFiltered[0];
+};
+
+export { findClient, findProduct, findService, findOrder };

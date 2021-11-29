@@ -6,6 +6,7 @@ import {
   ProductController,
   ServiceController,
   OrderController,
+  DashboardController,
 } from "./domain/controllers";
 
 import { ValuesDefault } from "./domain/shared/utils/ValuesDefault";
@@ -23,6 +24,7 @@ while (exec) {
   console.log(`2 - Serviço`);
   console.log(`3 - Produtos`);
   console.log(`4 - Pedidos`);
+  console.log(`5 - Dashboard`);
   // console.log(`Relatórios`)
   console.log(`0 - Sair \n`);
   let inputOption = input.number(`Por favor, escolha uma opção: `);
@@ -47,6 +49,10 @@ while (exec) {
     case 4:
       const orderController = new OrderController(business);
       orderController.actionsOrder();
+      break;
+    case 5:
+      const dashboardController = new DashboardController(business);
+      dashboardController.actionsDashboard();
       break;
     default:
       console.log(`Operação não entendida :(`);

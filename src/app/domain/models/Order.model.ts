@@ -74,9 +74,3 @@ export class Order {
 // 	- Id produto/Serviço
 // 	- diminuir valor total
 // 	-
-// - Mostrar recibo
-// 	- ex retorno
-// 	[
-// 		01, 321312, nomeproduto, 3(quant - kg, g, u), 2 UN, R$ 03,99
-// 		02, 322111, nomeservico, 1(quant - kg, g, u), 1 UN, R$ 150,99
-// 	]

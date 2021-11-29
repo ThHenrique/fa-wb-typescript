@@ -5,6 +5,7 @@ import {
   findClient,
   findProduct,
   findService,
+  findOrder,
 } from "../services/search.service";
 
 import Random from "../shared/utils/randomId";
@@ -48,9 +49,9 @@ export class OrderController {
       case 1:
         this.create();
         break;
-      // case 2:
-      //   this.index();
-      //   break;
+      case 2:
+        this.show();
+        break;
       // case 3:
       //   this.put();
       //   break;
@@ -134,5 +135,33 @@ export class OrderController {
     this.orderList.push(order);
 
     console.log("\nCarrinho Criado com sucesso!)\n");
+    console.log(`Código do PEDIDO: ${order.id}`);
+  }
+
+  public show(): void {
+    const order: Order = findOrder(this.orderList);
+    const format = {
+      minimumFractionDigits: 2,
+      style: "currency",
+      currency: "BRL",
+    };
+
+    console.log("Código, Nome, Quantidade, Un, Valor");
+    console.log("_________________________________________");
+    order.productList?.forEach(({ product, unit }) => {
+      const orderAmount = unit * product.price;
+      const formatOrderAmount = orderAmount.toLocaleString("pt-BR", format);
+      console.log(
+        `${product.id}, ${product.name}, ${unit} UN, ${formatOrderAmount}`
+      );
+    });
+    order.serviceList?.forEach(({ service, unit }) => {
+      const orderAmount = unit * service.price;
+      const formatOrderAmount = orderAmount.toLocaleString("pt-BR", format);
+      console.log(
+        `${service.id}, ${service.name}, ${unit} UN, ${formatOrderAmount}`
+      );
+    });
+    console.log();
   }
 }
