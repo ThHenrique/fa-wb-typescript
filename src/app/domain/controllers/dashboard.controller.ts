@@ -1,22 +1,13 @@
+import { BusinessModel, Client } from "../models";
 import Input from "../services/Number-text.input";
-
-import { BusinessModel, Client, Product, Service, Order } from "../models";
-
-import groupBy from "../shared/utils/groupBy";
 
 export class DashboardController {
   private input: Input;
   private clientList: Array<Client>;
-  private productList: Array<Product>;
-  private serviceList: Array<Service>;
-  private business: BusinessModel;
 
   constructor(business: BusinessModel) {
     this.input = new Input();
     this.clientList = business.clients;
-    this.productList = business.products;
-    this.serviceList = business.services;
-    this.business = business;
   }
 
   actionsDashboard() {
@@ -34,12 +25,11 @@ export class DashboardController {
     );
 
     let clientOption = this.input.number(
-      `Por favor, escolha uma opção da DASHBOARD: `
+      `Por favor, escolha uma opção da DASHBOARD:`
     );
     switch (clientOption) {
       case 0:
         return;
-      // break;
       case 1:
         this.getClientsDESC();
         break;
@@ -75,15 +65,14 @@ export class DashboardController {
       });
 
     const compare = (a, b) => {
-      if (a.consumer < b.consumer) return -1;
-      if (a.consumer > b.consumer) return 1;
+      if (a.consumer > b.consumer) return -1;
+      if (a.consumer < b.consumer) return 1;
       return 0;
     };
     report.sort(compare);
-    report.reverse();
-    report.slice(0, 9);
+    const top10 = report.slice(0, 10);
     console.log("Clientes que MAIS consumiram - TOP 10 \n");
-    report.forEach((client, index) => {
+    top10.forEach((client, index) => {
       console.log(`${index + 1} - ${client.name}, Consumo: ${client.consumer}`);
     });
     console.log();
@@ -108,7 +97,7 @@ export class DashboardController {
     report.sort(compare);
     const top10 = report.slice(0, 10);
     console.log("Clientes que MENOS consumiram - TOP 10 \n");
-    report.forEach((client, index) => {
+    top10.forEach((client, index) => {
       console.log(`${index + 1} - ${client.name}, Consumo: ${client.consumer}`);
     });
     console.log();
@@ -125,7 +114,6 @@ export class DashboardController {
       this.clientList.map((client) => {
         let valueServiceAndProductConsumer = 0;
         client.orders.forEach((order) => {
-          console.log(order);
           valueServiceAndProductConsumer += order.order_amount;
         });
         return {
@@ -135,12 +123,11 @@ export class DashboardController {
       });
 
     const compare = (a, b) => {
-      if (a.valueConsumer < b.valueConsumer) return -1;
-      if (a.valueConsumer > b.valueConsumer) return 1;
+      if (a.valueConsumer > b.valueConsumer) return -1;
+      if (a.valueConsumer < b.valueConsumer) return 1;
       return 0;
     };
     report.sort(compare);
-    report.reverse();
     const top5 = report.slice(0, 5);
     console.log("Clientes que MAIS gastaram $$ - TOP 5 \n");
     top5.forEach((client, index) => {
@@ -170,6 +157,180 @@ export class DashboardController {
     });
     console.log();
   }
-  public getProductsAndServices(): void {}
-  public getProductsAndServicesPerGender(): void {}
+
+  public getProductsAndServices(): void {
+    const listConsumedProducts: Array<{
+      id: number;
+      name: string;
+      unit: number;
+    }> = [];
+
+    const listConsumedService: Array<{
+      id: number;
+      name: string;
+      unit: number;
+    }> = [];
+
+    const insertingInList = (listItem, id, name, unit) => {
+      const searchItem = (item) => item.id === id;
+
+      let itemFind = listItem.find(searchItem);
+      if (itemFind !== undefined) {
+        itemFind.unit = itemFind.unit += unit;
+      } else {
+        listItem.push({ id: id, name: name, unit: unit });
+      }
+      return;
+    };
+
+    this.clientList.forEach((client) => {
+      client.orders.forEach((order) => {
+        order.productList?.forEach((product) => {
+          insertingInList(
+            listConsumedProducts,
+            product.product.id,
+            product.product.name,
+            product.unit
+          );
+        });
+
+        order.serviceList?.forEach((service) => {
+          insertingInList(
+            listConsumedService,
+            service.service.id,
+            service.service.name,
+            service.unit
+          );
+        });
+      });
+    });
+
+    const compare = (a, b) => {
+      if (a.unit > b.unit) return -1;
+      if (a.unit < b.unit) return 1;
+      return 0;
+    };
+
+    listConsumedService.sort(compare);
+    listConsumedProducts.sort(compare);
+
+    console.log("PRODUTOS MAIS CONSUMIDOS \n");
+    listConsumedProducts.forEach((product) => {
+      console.log(`Produto: ${product.name}, Total: ${product.unit}`);
+    });
+    console.log();
+    console.log("SERVIÇOS MAIS CONSUMIDOS \n");
+    listConsumedService.forEach((service) => {
+      console.log(`Serviço: ${service.name}, Total: ${service.unit}`);
+    });
+    console.log();
+  }
+
+  public getProductsAndServicesPerGender(): void {
+    const listConsumedProductsGenderMasc: Array<{
+      id: number;
+      name: string;
+      unit: number;
+    }> = [];
+    const listConsumedProductsGenderFemale: Array<{
+      id: number;
+      name: string;
+      unit: number;
+    }> = [];
+
+    const listConsumedServiceGenderFemale: Array<{
+      id: number;
+      name: string;
+      unit: number;
+    }> = [];
+    const listConsumedServiceGenderMasc: Array<{
+      id: number;
+      name: string;
+      unit: number;
+    }> = [];
+
+    const insertingInList = (listItem, id, name, unit) => {
+      const searchItem = (item) => item.id === id;
+
+      let itemFind = listItem.find(searchItem);
+      if (itemFind !== undefined) {
+        itemFind.unit = itemFind.unit += unit;
+      } else {
+        listItem.push({ id: id, name: name, unit: unit });
+      }
+      return;
+    };
+
+    this.clientList.forEach((client) => {
+      client.orders.forEach((order) => {
+        order.productList?.forEach((product) => {
+          if (client.gender === "Masculino") {
+            insertingInList(
+              listConsumedProductsGenderMasc,
+              product.product.id,
+              product.product.name,
+              product.unit
+            );
+          } else {
+            insertingInList(
+              listConsumedProductsGenderFemale,
+              product.product.id,
+              product.product.name,
+              product.unit
+            );
+          }
+        });
+
+        order.serviceList?.forEach((service) => {
+          if (client.gender === "Masculino") {
+            insertingInList(
+              listConsumedServiceGenderMasc,
+              service.service.id,
+              service.service.name,
+              service.unit
+            );
+          } else {
+            insertingInList(
+              listConsumedServiceGenderFemale,
+              service.service.id,
+              service.service.name,
+              service.unit
+            );
+          }
+        });
+      });
+    });
+
+    const compare = (a, b) => {
+      if (a.unit > b.unit) return -1;
+      if (a.unit < b.unit) return 1;
+      return 0;
+    };
+
+    listConsumedServiceGenderFemale.sort(compare);
+    listConsumedServiceGenderMasc.sort(compare);
+    listConsumedProductsGenderMasc.sort(compare);
+    listConsumedProductsGenderFemale.sort(compare);
+
+    console.log("PRODUTOS MAIS CONSUMIDOS - GÊNERO FEMININO\n");
+    listConsumedServiceGenderFemale.forEach((product) => {
+      console.log(`Produto: ${product.name}, Total: ${product.unit}`);
+    });
+    console.log();
+    console.log("PRODUTOS MAIS CONSUMIDOS - GÊNERO MASCULINO\n");
+    listConsumedServiceGenderMasc.forEach((product) => {
+      console.log(`Produto: ${product.name}, Total: ${product.unit}`);
+    });
+    console.log();
+    console.log("SERVIÇOS MAIS CONSUMIDOS - GÊNERO FEMININO\n");
+    listConsumedServiceGenderFemale.forEach((service) => {
+      console.log(`Serviço: ${service.name}, Total: ${service.unit}`);
+    });
+    console.log();
+    console.log("SERVIÇOS MAIS CONSUMIDOS - GÊNERO MASCULINO\n");
+    listConsumedServiceGenderMasc.forEach((service) => {
+      console.log(`Serviço: ${service.name}, Total: ${service.unit}`);
+    });
+    console.log();
+  }
 }

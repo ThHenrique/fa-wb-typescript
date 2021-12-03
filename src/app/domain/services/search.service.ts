@@ -17,8 +17,8 @@ const findClient = (clientList: Array<Client>, cpf?: number) => {
   return clientFiltered[0];
 };
 
-const findProduct = (productList: Array<Product>) => {
-  let productCode = input.number(`Código do Produto: `);
+const findProduct = (productList: Array<Product>, id?: number) => {
+  let productCode = !id ? input.number(`Código do Produto: `) : id;
 
   const productFiltered = productList.filter(
     (product) => product.id === productCode
@@ -31,8 +31,8 @@ const findProduct = (productList: Array<Product>) => {
   return productFiltered[0];
 };
 
-const findService = (serviceList: Array<Service>) => {
-  let serviceCode = input.number(`Código do serviço: `);
+const findService = (serviceList: Array<Service>, id?: number) => {
+  let serviceCode = !id ? input.number(`Código do serviço: `) : id;
 
   const serviceFiltered = serviceList.filter(
     (service) => service.id === serviceCode
