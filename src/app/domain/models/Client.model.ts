@@ -1,3 +1,4 @@
+import { Order } from ".";
 import * as SharedModel from "../shared/models";
 
 import { People } from "./People.model";
@@ -7,6 +8,9 @@ export class Client extends People {
   private email: string;
   readonly registeredDay: Date;
   readonly phones: SharedModel.Phone[];
+
+  private _orders: Array<Order>;
+
   constructor(
     id: number,
     email: string,
@@ -21,10 +25,23 @@ export class Client extends People {
     this.email = email;
     this.phones = phones;
     this.registeredDay = new Date();
+    this._orders = [];
   }
 
   public set updateInfo(info: any) {
     this.email = info.email;
     this.name = info.name;
+  }
+
+  public get orders() {
+    return this._orders;
+  }
+
+  public set orders(order: Order[]) {
+    this._orders = order;
+  }
+
+  public setListOrder(ordersUpdated: Array<Order>) {
+    this._orders = ordersUpdated;
   }
 }

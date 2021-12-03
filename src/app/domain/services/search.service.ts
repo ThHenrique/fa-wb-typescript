@@ -3,11 +3,11 @@ import Input from "./Number-text.input";
 
 const input = new Input();
 
-const findClient = (clientList: Array<Client>) => {
-  let cpfNumber = input.text(`Informe o CPF do cliente: `);
+const findClient = (clientList: Array<Client>, cpf?: number) => {
+  let cpfNumber = !cpf ? input.text(`Informe o CPF do cliente: `) : cpf;
 
   const clientFiltered = clientList.filter(
-    (client) => client.getCpf() === cpfNumber
+    (client) => client.getCpf() == cpfNumber
   );
 
   if (clientFiltered.length == 0) {
@@ -45,14 +45,15 @@ const findService = (serviceList: Array<Service>) => {
   return serviceFiltered[0];
 };
 
-const findOrder = (orderList: Array<Order>) => {
+const findOrder = (clientList: Array<Client>) => {
+  const client: Client = findClient(clientList);
   let orderCode = input.number(`Código do PEDIDO: `);
 
-  const orderFiltered = orderList.filter((order) => order.id === orderCode);
+  const orderFiltered = client.orders.filter((order) => order.id === orderCode);
 
   if (orderFiltered.length == 0) {
     console.log("Pedido não encontrado, tente novamente!");
-    return findOrder(orderList);
+    return findOrder(clientList);
   }
   return orderFiltered[0];
 };

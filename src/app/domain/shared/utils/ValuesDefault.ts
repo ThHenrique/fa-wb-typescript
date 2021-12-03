@@ -1,20 +1,19 @@
 import { BusinessModel, Client, Order, Product, Service } from "../../models";
 import { Phone } from "../models";
 import Random from "./randomId";
+import { findClient } from "../../services/search.service";
 
 export class ValuesDefault {
   private business: BusinessModel;
   private serviceList: Array<Service>;
   private productList: Array<Product>;
   private clientList: Array<Client>;
-  private orderList: Array<Order>;
 
   constructor(business: BusinessModel) {
     this.business = business;
     this.serviceList = business.services;
     this.productList = business.products;
     this.clientList = business.clients;
-    this.orderList = business.orders;
   }
 
   public create(): void {
@@ -58,6 +57,7 @@ export class ValuesDefault {
 
     const ordersDefault = this.ordersDefault();
     ordersDefault.forEach((order) => {
+      const client: Client = findClient(this.clientList, order.clientId);
       const productCartList: Array<{ product: Product; unit: number }> = [];
       const serviceCartList: Array<{ service: Service; unit: number }> = [];
       order.productCartList.forEach((product, index) => {
@@ -82,8 +82,10 @@ export class ValuesDefault {
         productCartList,
         serviceCartList
       );
+      const clientOrders: Order[] = client.orders;
+      clientOrders.push(newOrder);
 
-      this.orderList.push(newOrder);
+      client.orders = clientOrders;
     });
   }
 
@@ -126,7 +128,7 @@ export class ValuesDefault {
         name: "Thiago Ferreira",
         CPF: "123",
         birthDate: new Date("08/24/2001"),
-        gender: "M",
+        gender: "Masculino",
         phones: [
           { ddd: 12, number: 931223211 },
           { ddd: 12, number: 31213111 },
@@ -137,7 +139,7 @@ export class ValuesDefault {
         name: "Nelson Ferreira",
         CPF: "321",
         birthDate: new Date("07/11/1999"),
-        gender: "M",
+        gender: "Masculino",
         phones: [
           { ddd: 12, number: 432567843 },
           { ddd: 12, number: 78457332 },
@@ -148,7 +150,7 @@ export class ValuesDefault {
         name: "Henrique Moura",
         CPF: "111",
         birthDate: new Date("01/01/2002"),
-        gender: "M",
+        gender: "Masculino",
         phones: [
           { ddd: 12, number: 649863412 },
           { ddd: 12, number: 23568606 },
@@ -159,7 +161,7 @@ export class ValuesDefault {
         name: "Maria Elena",
         CPF: "1234",
         birthDate: new Date("01/24/2001"),
-        gender: "F",
+        gender: "Feminino",
         phones: [
           { ddd: 12, number: 74889714 },
           { ddd: 12, number: 98554100 },
@@ -170,7 +172,7 @@ export class ValuesDefault {
         name: "Luiza Brito",
         CPF: "1112",
         birthDate: new Date("07/11/1999"),
-        gender: "F",
+        gender: "Feminino",
         phones: [
           { ddd: 12, number: 74449668 },
           { ddd: 12, number: 745522100 },
@@ -181,7 +183,7 @@ export class ValuesDefault {
         name: "Ana Clara",
         CPF: "11113",
         birthDate: new Date("04/01/2002"),
-        gender: "F",
+        gender: "Feminino",
         phones: [
           { ddd: 12, number: 44599822 },
           { ddd: 12, number: 99856641 },
@@ -201,7 +203,7 @@ export class ValuesDefault {
         seller_id: 2,
         seller_commission: 3,
         productCartList: this.productList.slice(1, 3),
-        serviceCartList: this.serviceList.slice(1),
+        serviceCartList: this.serviceList.slice(0, 1),
         productUnit: [4, 5],
       },
       {
@@ -211,7 +213,7 @@ export class ValuesDefault {
         seller_id: 1,
         seller_commission: 3,
         productCartList: this.productList.slice(5, 7),
-        serviceCartList: this.serviceList.slice(5),
+        serviceCartList: this.serviceList.slice(4, 5),
         productUnit: [4, 7],
       },
       {
@@ -221,8 +223,8 @@ export class ValuesDefault {
         seller_id: 1,
         seller_commission: 3,
         productCartList: this.productList.slice(5, 7),
-        serviceCartList: this.serviceList.slice(5),
-        productUnit: [4, 7],
+        serviceCartList: this.serviceList.slice(4, 5),
+        productUnit: [1, 2],
       },
       {
         clientId: 111,
@@ -230,8 +232,8 @@ export class ValuesDefault {
         statusPayment: "pending",
         seller_id: 1,
         seller_commission: 3,
-        productCartList: this.productList.slice(1),
-        serviceCartList: this.serviceList.slice(1),
+        productCartList: this.productList.slice(0, 1),
+        serviceCartList: this.serviceList.slice(2, 3),
         productUnit: [3],
       },
       {
@@ -241,7 +243,7 @@ export class ValuesDefault {
         seller_id: 3,
         seller_commission: 3,
         productCartList: this.productList.slice(1, 3),
-        serviceCartList: this.serviceList.slice(4),
+        serviceCartList: this.serviceList.slice(3, 4),
         productUnit: [3, 2],
       },
       {
@@ -251,7 +253,7 @@ export class ValuesDefault {
         seller_id: 3,
         seller_commission: 3,
         productCartList: this.productList.slice(7, 9),
-        serviceCartList: this.serviceList.slice(7),
+        serviceCartList: this.serviceList.slice(6, 7),
         productUnit: [4, 1],
       },
       {
@@ -261,7 +263,7 @@ export class ValuesDefault {
         seller_id: 2,
         seller_commission: 3,
         productCartList: this.productList.slice(6, 9),
-        serviceCartList: this.serviceList.slice(9),
+        serviceCartList: this.serviceList.slice(8, 9),
         productUnit: [1, 4, 1],
       },
       {
@@ -271,7 +273,7 @@ export class ValuesDefault {
         seller_id: 3,
         seller_commission: 3,
         productCartList: this.productList.slice(5, 9),
-        serviceCartList: this.serviceList.slice(4),
+        serviceCartList: this.serviceList.slice(3, 4),
         productUnit: [3, 2, 4, 1],
       },
       {
@@ -281,7 +283,7 @@ export class ValuesDefault {
         seller_id: 3,
         seller_commission: 3,
         productCartList: this.productList.slice(2, 7),
-        serviceCartList: this.serviceList.slice(1),
+        serviceCartList: this.serviceList.slice(0, 1),
         productUnit: [1, 1, 1, 1, 2, 1],
       },
       {
@@ -291,7 +293,7 @@ export class ValuesDefault {
         seller_id: 3,
         seller_commission: 3,
         productCartList: this.productList.slice(7, 9),
-        serviceCartList: this.serviceList.slice(5),
+        serviceCartList: this.serviceList.slice(4, 5),
         productUnit: [1, 1],
       },
     ];

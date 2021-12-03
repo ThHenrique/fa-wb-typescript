@@ -12,7 +12,6 @@ import Random from "../shared/utils/randomId";
 
 export class OrderController {
   private input: Input;
-  private orderList: Array<Order>;
   private clientList: Array<Client>;
   private productList: Array<Product>;
   private serviceList: Array<Service>;
@@ -20,7 +19,6 @@ export class OrderController {
 
   constructor(business: BusinessModel) {
     this.input = new Input();
-    this.orderList = business.orders;
     this.clientList = business.clients;
     this.productList = business.products;
     this.serviceList = business.services;
@@ -113,7 +111,7 @@ export class OrderController {
 
     const timestamp = new Date();
     const id = Random(timestamp.getTime());
-    const client = findClient(this.clientList);
+    const client: Client = findClient(this.clientList);
 
     const seller_id = 1;
     const seller_commission = 3;
@@ -132,14 +130,16 @@ export class OrderController {
       serviceCartList
     );
 
-    this.orderList.push(order);
+    const clientOrders: Order[] = client.orders;
+    clientOrders.push(order);
+    client.orders = clientOrders;
 
     console.log("\nCarrinho Criado com sucesso!)\n");
     console.log(`Código do PEDIDO: ${order.id}`);
   }
 
   public show(): void {
-    const order: Order = findOrder(this.orderList);
+    const order: Order = findOrder(this.clientList);
     const format = {
       minimumFractionDigits: 2,
       style: "currency",
