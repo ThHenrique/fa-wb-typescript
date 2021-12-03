@@ -6,7 +6,6 @@ import groupBy from "../shared/utils/groupBy";
 
 export class DashboardController {
   private input: Input;
-  private orderList: Array<Order>;
   private clientList: Array<Client>;
   private productList: Array<Product>;
   private serviceList: Array<Service>;
@@ -14,7 +13,6 @@ export class DashboardController {
 
   constructor(business: BusinessModel) {
     this.input = new Input();
-    this.orderList = business.orders;
     this.clientList = business.clients;
     this.productList = business.products;
     this.serviceList = business.services;
@@ -65,13 +63,113 @@ export class DashboardController {
     }
   }
 
-  public getClientsASC(): void {
-    // 1 - Clientes que MAIS consumiram - TOP 10
-    console.log(this.orderList);
+  public getClientsDESC(): void {
+    const report: Array<{ name: string; consumer: number }> =
+      this.clientList.map((client) => {
+        let countServiceAndProduct = 0;
+        client.orders.forEach((order) => {
+          order.productList?.forEach(() => countServiceAndProduct++);
+          order.serviceList?.forEach(() => countServiceAndProduct++);
+        });
+        return { name: client.name, consumer: countServiceAndProduct };
+      });
+
+    const compare = (a, b) => {
+      if (a.consumer < b.consumer) return -1;
+      if (a.consumer > b.consumer) return 1;
+      return 0;
+    };
+    report.sort(compare);
+    report.reverse();
+    report.slice(0, 9);
+    console.log("Clientes que MAIS consumiram - TOP 10 \n");
+    report.forEach((client, index) => {
+      console.log(`${index + 1} - ${client.name}, Consumo: ${client.consumer}`);
+    });
+    console.log();
   }
-  public getClientsDESC(): void {}
-  public getClientsInValueDESC(): void {}
-  public getClientsPerGender(): void {}
+
+  public getClientsASC(): void {
+    const report: Array<{ name: string; consumer: number }> =
+      this.clientList.map((client) => {
+        let countServiceAndProduct = 0;
+        client.orders.forEach((order) => {
+          order.productList?.forEach(() => countServiceAndProduct++);
+          order.serviceList?.forEach(() => countServiceAndProduct++);
+        });
+        return { name: client.name, consumer: countServiceAndProduct };
+      });
+
+    const compare = (a, b) => {
+      if (a.consumer < b.consumer) return -1;
+      if (a.consumer > b.consumer) return 1;
+      return 0;
+    };
+    report.sort(compare);
+    const top10 = report.slice(0, 10);
+    console.log("Clientes que MENOS consumiram - TOP 10 \n");
+    report.forEach((client, index) => {
+      console.log(`${index + 1} - ${client.name}, Consumo: ${client.consumer}`);
+    });
+    console.log();
+  }
+
+  public getClientsInValueDESC(): void {
+    const format = {
+      minimumFractionDigits: 2,
+      style: "currency",
+      currency: "BRL",
+    };
+
+    const report: Array<{ name: string; valueConsumer: number }> =
+      this.clientList.map((client) => {
+        let valueServiceAndProductConsumer = 0;
+        client.orders.forEach((order) => {
+          console.log(order);
+          valueServiceAndProductConsumer += order.order_amount;
+        });
+        return {
+          name: client.name,
+          valueConsumer: valueServiceAndProductConsumer,
+        };
+      });
+
+    const compare = (a, b) => {
+      if (a.valueConsumer < b.valueConsumer) return -1;
+      if (a.valueConsumer > b.valueConsumer) return 1;
+      return 0;
+    };
+    report.sort(compare);
+    report.reverse();
+    const top5 = report.slice(0, 5);
+    console.log("Clientes que MAIS gastaram $$ - TOP 5 \n");
+    top5.forEach((client, index) => {
+      console.log(
+        `${index + 1} - ${
+          client.name
+        }, Valor Total: ${client.valueConsumer.toLocaleString("pt-BR", format)}`
+      );
+    });
+    console.log();
+  }
+
+  public getClientsPerGender(): void {
+    const clientList = this.clientList;
+    const compare = (a, b) => {
+      if (a.gender > b.gender) return -1;
+      if (a.gender < b.gender) return 1;
+      return 0;
+    };
+    clientList.sort(compare);
+
+    console.log("Clientes por GÊNERO \n");
+    clientList.forEach((client) => {
+      console.log(
+        `Nome: ${client.name}, Sexo: ${client.gender} - CPF: ${client.getCpf()}`
+      );
+    });
+    console.log();
+  }
   public getProductsAndServices(): void {}
   public getProductsAndServicesPerGender(): void {}
 }
