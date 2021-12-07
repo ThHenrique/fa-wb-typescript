@@ -2,7 +2,7 @@
 
 Neste guia iremos configurar o ambiente de desenvolvimento, clonando o projeto e instalando suas dependências, além de mostrar como executá-lo. Ainda neste guia é possível encontrar uma breve explicação da estrutura das pastas adotada para a construção desse projeto.
 
-> :desktop_computer: Para acessar o diagrama de classe, acesse: [Meu diagrama](https://polaris-fatec.netlify.app/)
+![Diagrama de classes](./fa-wb-typescript.drawio.svg)
 
 ### Links úteis (para antes de clonar o repositório)
 
