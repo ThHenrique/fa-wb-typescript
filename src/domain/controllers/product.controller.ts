@@ -1,11 +1,10 @@
-import Input from "../services/Number-text.input";
-
-import { BusinessModel, Product as ProductModel } from "../models";
+import { BusinessModel, Product } from "../models";
+import { Input } from "../shared/utils";
 
 export class ProductController {
   private input: Input;
   private business: BusinessModel;
-  private productList: Array<ProductModel>;
+  private productList: Array<Product>;
 
   constructor(business: BusinessModel) {
     this.input = new Input();
@@ -83,7 +82,7 @@ export class ProductController {
     const price = this.input.number(`Preço: `);
     const amount = this.input.number(`Quantidade: `);
     const productCode: number = this.generatingProductCode();
-    const product = new ProductModel(productCode, name, price, amount);
+    const product = new Product(productCode, name, price, amount);
 
     this.productList.push(product);
     console.log("\nCadastro concluído :)\n");
@@ -103,7 +102,7 @@ export class ProductController {
   }
 
   public show(): void {
-    const product: ProductModel = this.findProduct();
+    const product: Product = this.findProduct();
     console.log(`
     Nome: ${product.name}
     Preço: R$ ${product.price}
@@ -113,7 +112,7 @@ export class ProductController {
   }
 
   public put(): void {
-    const product: ProductModel = this.findProduct();
+    const product: Product = this.findProduct();
     let price = this.input.number(`Atualizar preço do produto: `);
     let amount = this.input.number(`Atualizar quantidade: `);
     const payload = { amount, price };
@@ -122,10 +121,10 @@ export class ProductController {
   }
 
   public delete(): void {
-    const product: ProductModel = this.findProduct();
+    const product: Product = this.findProduct();
 
     const productListUpdated = this.productList.filter(
-      (productRemoving: ProductModel) => {
+      (productRemoving: Product) => {
         return productRemoving.id !== product.id;
       }
     );

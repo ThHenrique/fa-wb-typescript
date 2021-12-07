@@ -1,4 +1,4 @@
-import Input from "./domain/services/Number-text.input";
+import { Input } from "./domain/shared/utils";
 import BusinessModel from "./domain/models/Business.model";
 
 import {
@@ -24,8 +24,7 @@ while (exec) {
   console.log(`2 - Serviço`);
   console.log(`3 - Produtos`);
   console.log(`4 - Pedidos`);
-  console.log(`5 - Dashboard`);
-  // console.log(`Relatórios`)
+  console.log(`5 - Relatórios`);
   console.log(`0 - Sair \n`);
   let inputOption = input.number(`Por favor, escolha uma opção: `);
 

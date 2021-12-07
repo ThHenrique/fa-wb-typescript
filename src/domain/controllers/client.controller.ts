@@ -1,8 +1,6 @@
-import Input from "../services/Number-text.input";
-
 import { BusinessModel, Client as ClientModel } from "../models";
 import { Phone } from "../shared/models";
-import Random from "../shared/utils/randomId";
+import { Input, random } from "../shared/utils";
 
 export class ClientController {
   private input: Input;
@@ -88,7 +86,7 @@ export class ClientController {
     const birthDateAux = new Date(birthDate);
 
     const timestamp = Date.now();
-    const id = Random(timestamp);
+    const id = random(timestamp);
 
     const client = new ClientModel(
       id,

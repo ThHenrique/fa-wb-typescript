@@ -1,5 +1,5 @@
-import { Client, Product, Service, Order } from "../models";
-import Input from "./Number-text.input";
+import { Client, Product, Service } from "../../models";
+import { Input } from "./Number-text.input";
 
 const input = new Input();
 

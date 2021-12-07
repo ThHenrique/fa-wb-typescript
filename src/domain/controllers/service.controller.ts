@@ -1,6 +1,5 @@
-import Input from "../services/Number-text.input";
-
 import { BusinessModel, Service } from "../models";
+import { Input } from "../shared/utils";
 
 export class ServiceController {
   private input: Input;

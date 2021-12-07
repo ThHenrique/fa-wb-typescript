@@ -1,14 +1,13 @@
-import Input from "../services/Number-text.input";
-
 import { BusinessModel, Client, Product, Service, Order } from "../models";
+
 import {
+  Input,
   findClient,
   findProduct,
   findService,
   findOrder,
-} from "../services/search.service";
-
-import Random from "../shared/utils/randomId";
+  random,
+} from "../shared/utils";
 
 export class OrderController {
   private input: Input;
@@ -110,7 +109,7 @@ export class OrderController {
     console.log("\nCarrinho Cliente");
 
     const timestamp = new Date();
-    const id = Random(timestamp.getTime());
+    const id = random(timestamp.getTime());
     const client: Client = findClient(this.clientList);
 
     const seller_id = 1;

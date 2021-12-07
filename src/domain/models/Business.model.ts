@@ -1,4 +1,4 @@
-import { Client, Product, Service, Order } from "./index";
+import { Client, Product, Service } from "./index";
 
 export default class Business {
   private _clientList: Array<Client>;

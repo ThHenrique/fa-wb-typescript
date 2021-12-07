@@ -1,7 +1,6 @@
-import { Order } from ".";
-import * as SharedModel from "../shared/models";
-
+import { Order } from "./Order.model";
 import { People } from "./People.model";
+import * as SharedModel from "../shared/models";
 
 export class Client extends People {
   readonly id: number;

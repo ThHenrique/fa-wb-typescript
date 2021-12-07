@@ -1,6 +1,6 @@
 import promptSync from "prompt-sync";
 
-export default class Input {
+export class Input {
   public number(value: string): number {
     let prompt = promptSync();
     let valueAux = prompt(value);

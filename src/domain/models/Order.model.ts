@@ -1,4 +1,4 @@
-import { Client, Product, Service } from ".";
+import { Product, Service } from "./index";
 
 export class Order {
   readonly id: number;

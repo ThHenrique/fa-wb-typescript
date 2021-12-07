@@ -1,5 +1,5 @@
 import { BusinessModel, Client } from "../models";
-import Input from "../services/Number-text.input";
+import { Input } from "../shared/utils";
 
 export class DashboardController {
   private input: Input;

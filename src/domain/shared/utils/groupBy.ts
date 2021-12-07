@@ -1,4 +1,4 @@
-export default function groupBy(list, criterion) {
+export function groupBy(list, criterion) {
   const newObj = list.reduce(function (acc, currentValue) {
     if (!acc[currentValue[criterion]]) {
       acc[currentValue[criterion]] = [];

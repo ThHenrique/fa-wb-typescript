@@ -1,7 +1,7 @@
 import { BusinessModel, Client, Order, Product, Service } from "../../models";
 import { Phone } from "../models";
-import Random from "./randomId";
-import { findClient } from "../../services/search.service";
+import { random } from "./randomId";
+import { findClient } from "./search.service";
 
 export class ValuesDefault {
   private business: BusinessModel;
@@ -42,7 +42,7 @@ export class ValuesDefault {
       client.phones.forEach(({ ddd, number }) => {
         phoneList.push(new Phone(ddd, number));
       });
-      const id = Random(Date.now());
+      const id = random(Date.now());
       const newClient = new Client(
         id,
         client.email,
@@ -71,7 +71,7 @@ export class ValuesDefault {
         const servicePivot = { service: service, unit: 1 };
         serviceCartList.push(servicePivot);
       });
-      const id = Random(Date.now());
+      const id = random(Date.now());
       const newOrder = new Order(
         id,
         order.clientId,
