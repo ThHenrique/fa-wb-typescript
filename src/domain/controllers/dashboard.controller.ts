@@ -143,8 +143,8 @@ export class DashboardController {
   public getClientsPerGender(): void {
     const clientList = this.clientList;
     const compare = (a, b) => {
-      if (a.gender > b.gender) return -1;
-      if (a.gender < b.gender) return 1;
+      if (a.gender < b.gender) return -1;
+      if (a.gender > b.gender) return 1;
       return 0;
     };
     clientList.sort(compare);

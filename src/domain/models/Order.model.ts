@@ -45,6 +45,10 @@ export class Order {
       this.order_amount += service.price * unit;
     });
   }
+
+  paidOrder() {
+    this.status_order = "paid";
+  }
 }
 
 // Carrinho de compra

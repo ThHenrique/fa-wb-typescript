@@ -45,9 +45,9 @@ const findService = (serviceList: Array<Service>, id?: number) => {
   return serviceFiltered[0];
 };
 
-const findOrder = (clientList: Array<Client>) => {
+const findOrder = (clientList: Array<Client>, id?: number) => {
   const client: Client = findClient(clientList);
-  let orderCode = input.number(`Código do PEDIDO: `);
+  let orderCode = !id ? input.number(`Código do PEDIDO: `) : id;
 
   const orderFiltered = client.orders.filter((order) => order.id === orderCode);
 

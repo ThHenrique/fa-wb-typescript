@@ -14,14 +14,12 @@ export class OrderController {
   private clientList: Array<Client>;
   private productList: Array<Product>;
   private serviceList: Array<Service>;
-  private business: BusinessModel;
 
   constructor(business: BusinessModel) {
     this.input = new Input();
     this.clientList = business.clients;
     this.productList = business.products;
     this.serviceList = business.services;
-    this.business = business;
   }
 
   actionsOrder() {
@@ -29,9 +27,8 @@ export class OrderController {
       `\n
       Opções de Cliente: 
       1 - Cadastrar pedido
-      2 - Listar todos os pedidos
-      3 - Atualizar pedido
-      4 - Pagar pedido 
+      2 - Gerar Recibo
+      3 - Pagar pedido 
       0 - Voltar ao menu principal \n
       `
     );
@@ -49,15 +46,9 @@ export class OrderController {
       case 2:
         this.show();
         break;
-      // case 3:
-      //   this.put();
-      //   break;
-      // case 4:
-      //   this.show();
-      //   break;
-      // case 5:
-      //   this.delete();
-      //   break;
+      case 3:
+        this.paidOrder();
+        break;
       default:
         console.log(`Operação não entendida :(`);
     }
@@ -137,14 +128,19 @@ export class OrderController {
     console.log(`Código do PEDIDO: ${order.id}`);
   }
 
-  public show(): void {
-    const order: Order = findOrder(this.clientList);
+  public show(orderFound?: Order): void {
+    const order: Order = !orderFound ? findOrder(this.clientList) : orderFound;
     const format = {
       minimumFractionDigits: 2,
       style: "currency",
       currency: "BRL",
     };
 
+    console.log(
+      `Recibo - ${order.id} ${order.purchase_date.toLocaleDateString(
+        "pt-BR"
+      )}\n`
+    );
     console.log("Código, Nome, Quantidade, Un, Valor");
     console.log("_________________________________________");
     order.productList?.forEach(({ product, unit }) => {
@@ -161,6 +157,27 @@ export class OrderController {
         `${service.id}, ${service.name}, ${unit} UN, ${formatOrderAmount}`
       );
     });
+    console.log(`Total: ${order.order_amount.toLocaleString("pt-BR", format)}`);
     console.log();
+  }
+
+  public paidOrder(): void {
+    const order: Order = findOrder(this.clientList);
+
+    this.show(order);
+
+    const wantPaid = this.input.text("Pedido foi pago ? [S] Sim | [N] Não ");
+
+    if (wantPaid.toLocaleUpperCase() === "S") {
+      order.paidOrder();
+    }
+    console.log(
+      `Compra ${order.id} - ${order.purchase_date.toLocaleDateString(
+        "pt-BR"
+      )}\n`
+    );
+    console.log("Status de pagamento atualizado com sucesso! Volte sempre");
+
+    console.log(`\n`);
   }
 }
