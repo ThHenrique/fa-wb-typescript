@@ -2,8 +2,6 @@
 
 Neste guia iremos configurar o ambiente de desenvolvimento, clonando o projeto e instalando suas dependências, além de mostrar como executá-lo. Ainda neste guia é possível encontrar uma breve explicação da estrutura das pastas adotada para a construção desse projeto.
 
-![Diagrama de classes](./fa-wb-typescript.drawio.svg)
-
 ### Links úteis (para antes de clonar o repositório)
 
 - [Instalação das ferramentas](https://www.notion.so/Instala-o-das-ferramentas-405f3e8b014649cbb422dee6b5bd0535): como instalar o Node, NPM ou Yarn e o Visual Studio Code (tutoriais para Windows, MacOS e Linux)
@@ -57,3 +55,7 @@ Agora o projeto está sendo executado. Todas as operações serão feitas via CL
 As seguintes tecnologias e ferramentas estão sendo utilizadas neste projeto:
 
 - [TypeScript](https://www.typescriptlang.org/)
+
+### Diagrama de Classe:
+
+![Diagrama de classes](./fa-wb-typescript.drawio.svg)
