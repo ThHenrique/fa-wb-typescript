@@ -1,5 +1,5 @@
 import { BusinessModel, Service } from "../models";
-import { Input } from "../shared/utils";
+import { Input, findService } from "../shared/utils";
 
 export class ServiceController {
   private input: Input;
@@ -52,26 +52,12 @@ export class ServiceController {
 
   generatingServiceCode() {
     if (this.serviceList.length > 0) {
-      const lastServiceCode = this.serviceList.at(-1);
+      const lastServiceCode = this.serviceList[this.serviceList.length - 1];
       let serviceCode = lastServiceCode?.id;
       if (!serviceCode) return 1;
       return serviceCode + 1;
     }
     return 0;
-  }
-
-  findService() {
-    let serviceCode = this.input.number(`Código do serviço: `);
-
-    const serviceFiltered = this.serviceList.filter(
-      (service) => service.id === serviceCode
-    );
-
-    if (serviceFiltered.length == 0) {
-      console.log("Serviço não encontrado, tente novamente!");
-      return this.findService();
-    }
-    return serviceFiltered[0];
   }
 
   public create(): void {
@@ -99,7 +85,7 @@ export class ServiceController {
   }
 
   public show(): void {
-    const service: Service = this.findService();
+    const service: Service = findService(this.serviceList);
     console.log(`
     Nome: ${service.name}
     Preço: R$ ${service.price}
@@ -108,7 +94,7 @@ export class ServiceController {
   }
 
   public put(): void {
-    const service: Service = this.findService();
+    const service: Service = findService(this.serviceList);
     let price = this.input.number(`Atualizar valor do serviço: `);
     const payload = { price };
     service.update = payload;
@@ -116,7 +102,7 @@ export class ServiceController {
   }
 
   public delete(): void {
-    const service: Service = this.findService();
+    const service: Service = findService(this.serviceList);
 
     const serviceListUpdated = this.serviceList.filter(
       (serviceRemoving: Service) => {

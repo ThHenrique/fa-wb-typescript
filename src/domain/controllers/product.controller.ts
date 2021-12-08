@@ -1,5 +1,5 @@
 import { BusinessModel, Product } from "../models";
-import { Input } from "../shared/utils";
+import { Input, findProduct } from "../shared/utils";
 
 export class ProductController {
   private input: Input;
@@ -52,27 +52,12 @@ export class ProductController {
 
   generatingProductCode() {
     if (this.productList.length > 0) {
-      const lastProductCode = this.productList.at(-1);
+      const lastProductCode = this.productList[this.productList.length - 1];
       let productCode = lastProductCode?.id;
       if (!productCode) return 1;
       return productCode + 1;
     }
     return 0;
-  }
-
-  findProduct() {
-    let productCode = this.input.number(`Código do Produto: `);
-
-    const productFiltered = this.productList.filter(
-      (product) => product.id === productCode
-    );
-
-    if (productFiltered.length == 0) {
-      console.log("Produto não encontrado, tente novamente!");
-
-      return this.findProduct();
-    }
-    return productFiltered[0];
   }
 
   public create(): void {
@@ -102,7 +87,7 @@ export class ProductController {
   }
 
   public show(): void {
-    const product: Product = this.findProduct();
+    const product: Product = findProduct(this.productList);
     console.log(`
     Nome: ${product.name}
     Preço: R$ ${product.price}
@@ -112,7 +97,7 @@ export class ProductController {
   }
 
   public put(): void {
-    const product: Product = this.findProduct();
+    const product: Product = findProduct(this.productList);
     let price = this.input.number(`Atualizar preço do produto: `);
     let amount = this.input.number(`Atualizar quantidade: `);
     const payload = { amount, price };
@@ -121,7 +106,7 @@ export class ProductController {
   }
 
   public delete(): void {
-    const product: Product = this.findProduct();
+    const product: Product = findProduct(this.productList);
 
     const productListUpdated = this.productList.filter(
       (productRemoving: Product) => {

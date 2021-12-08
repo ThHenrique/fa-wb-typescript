@@ -1,6 +1,6 @@
 import { BusinessModel, Client as ClientModel } from "../models";
 import { Phone } from "../shared/models";
-import { Input, random } from "../shared/utils";
+import { Input, random, findClient } from "../shared/utils";
 
 export class ClientController {
   private input: Input;
@@ -53,19 +53,6 @@ export class ClientController {
     }
   }
 
-  findClient(cpfNumber: string) {
-    const clientFiltered = this.clientList.filter(
-      (client) => client.getCpf() === cpfNumber
-    );
-
-    if (clientFiltered.length == 0) {
-      console.log("Cliente não encontrado, tente novamente!");
-      cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
-      return this.findClient(cpfNumber);
-    }
-    return clientFiltered[0];
-  }
-
   public create(): void {
     console.log("\nInício do cadastro do cliente");
 
@@ -114,9 +101,7 @@ export class ClientController {
   }
 
   public show(): void {
-    let cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
-
-    const client: ClientModel = this.findClient(cpfNumber);
+    const client: ClientModel = findClient(this.clientList);
     console.log(`
     Nome: ${client.name}
     CPF: ${client.getCpf()}
@@ -125,9 +110,7 @@ export class ClientController {
   }
 
   public put(): void {
-    let cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
-
-    const client: ClientModel = this.findClient(cpfNumber);
+    const client: ClientModel = findClient(this.clientList);
     let name = this.input.text(`Atualizar nome do cliente: `);
     let email = this.input.text(`Atualizar email do cliente: `);
     const payload = { email, name };
@@ -136,9 +119,7 @@ export class ClientController {
   }
 
   public delete(): void {
-    let cpfNumber = this.input.text(`Por favor informe o número do cpf: `);
-
-    const client: ClientModel = this.findClient(cpfNumber);
+    const client: ClientModel = findClient(this.clientList);
 
     const clientListUpdated = this.clientList.filter(
       (clientRemoved: ClientModel) => {

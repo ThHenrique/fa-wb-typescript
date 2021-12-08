@@ -17,7 +17,7 @@ export class Order {
     id: number,
     client_id: number,
     purchase_date: Date,
-    status_order: "pending" | "paid",
+    status_order: string,
     seller_id: number,
     seller_commission: number,
     productList?: Array<{ product: Product; unit: number }>,
